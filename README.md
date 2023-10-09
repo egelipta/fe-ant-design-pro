@@ -65,3 +65,9 @@ npm install three@latest
 ```bash
 npm install @types/three@latest --save-dev
 ```
+
+GUI Three JS
+
+```bash
+npm install @types/dat.gui --save-dev
+```

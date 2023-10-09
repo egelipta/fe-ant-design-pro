@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import * as THREE from 'three';
-// import * as dat from 'dat.gui'
+import * as dat from 'dat.gui'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
-// import './style.css'
+import './style.css'
 
 function ThreeJS() {
     useEffect(() => {
@@ -214,36 +214,36 @@ function ThreeJS() {
         // ==========================
 
         // ========MOUSEMOVE=========
-        // document.addEventListener('mousemove', (event) => {
-        //     // Mendapatkan posisi mouse dalam koordinat normalized device coordinates (NDC)
-        //     mouse.x = (event.clientX / window.innerWidth) * 2 - 1
-        //     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1
+        document.addEventListener('mousemove', (event) => {
+            // Mendapatkan posisi mouse dalam koordinat normalized device coordinates (NDC)
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1
 
-        //     // Lakukan raycasting untuk mendeteksi objek yang disorot oleh kursor
-        //     raycaster.setFromCamera(mouse, camera)
+            // Lakukan raycasting untuk mendeteksi objek yang disorot oleh kursor
+            raycaster.setFromCamera(mouse, camera)
 
-        //     const intersects = raycaster.intersectObjects(cubes)
+            const intersects = raycaster.intersectObjects(cubes)
 
-        //     if (intersects.length > 0) {
-        //         const hoveredObject = intersects[0].object as THREE.Mesh
-        //         const hoveredIndex = hoveredObject.userData.id
+            if (intersects.length > 0) {
+                const hoveredObject = intersects[0].object as THREE.Mesh
+                const hoveredIndex = hoveredObject.userData.id
 
-        //         // Cari objek dengan ID yang sesuai dalam array dataDevice
-        //         const foundObject = dataDevice.find((item) => item.id === hoveredIndex)
+                // Cari objek dengan ID yang sesuai dalam array dataDevice
+                const foundObject = dataDevice.find((item) => item.id === hoveredIndex)
 
-        //         if (foundObject) {
-        //             // Jika objek ditemukan, perbarui nilai variabel-variabel di GUI
-        //             guiData.ID = hoveredIndex
-        //             guiData.Name = foundObject.name
-        //             guiData.Instansi = foundObject.instansi
-        //         }
-        //     } else {
-        //         // Reset nilai jika tidak ada objek yang disorot
-        //         guiData.ID = ''
-        //         guiData.Name = ''
-        //         guiData.Instansi = ''
-        //     }
-        // })
+                if (foundObject) {
+                    // Jika objek ditemukan, perbarui nilai variabel-variabel di GUI
+                    guiData.ID = hoveredIndex
+                    guiData.Name = foundObject.name
+                    guiData.Instansi = foundObject.instansi
+                }
+            } else {
+                // Reset nilai jika tidak ada objek yang disorot
+                guiData.ID = ''
+                guiData.Name = ''
+                guiData.Instansi = ''
+            }
+        })
 
         // document.addEventListener('mousemove', (event) => {
         //     // Mendapatkan posisi mouse dalam koordinat normalized device coordinates (NDC)
@@ -291,19 +291,19 @@ function ThreeJS() {
 
         // ==========GUI==========
 
-        // const gui = new dat.GUI()
-        // const guiData = {
-        //     ID: '',
-        //     Name: '',
-        //     Instansi: '',
-        // }
-        // const folder = gui.addFolder('Information')
-        // folder.add(guiData, 'ID').name('ID').listen()
-        // folder.add(guiData, 'Name').name('Name').listen()
-        // folder.add(guiData, 'Instansi').name('Instansi').listen()
+        const gui = new dat.GUI()
+        const guiData = {
+            ID: '',
+            Name: '',
+            Instansi: '',
+        }
+        const folder = gui.addFolder('Information')
+        folder.add(guiData, 'ID').name('ID').listen()
+        folder.add(guiData, 'Name').name('Name').listen()
+        folder.add(guiData, 'Instansi').name('Instansi').listen()
 
-        // const guiContainer = document.getElementById('gui-container');
-        // guiContainer.appendChild(gui.domElement);
+        const guiContainer = document.getElementById('gui-container');
+        guiContainer.appendChild(gui.domElement);
         // =======================
 
         // Fungsi animasi
@@ -343,8 +343,8 @@ function ThreeJS() {
 
     return (
         <div>
+            <div id="gui-container" className="gui-container" />
             <div id="container" style={{ width: '100%', height: '75vh' }} />
-            {/* <div id="gui-container" className="gui-container" /> */}
         </div>
     )
 }
