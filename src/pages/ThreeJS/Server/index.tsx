@@ -56,7 +56,7 @@ function ThreeJS() {
         const edgesRack = new THREE.EdgesGeometry(geometryRack)
         const outlineMaterialRack = new THREE.LineBasicMaterial({
             color: 0x000000, // Warna hitam
-            linewidth: 2,
+            linewidth: 1,
         })
         const outlineRack = new THREE.LineSegments(edgesRack, outlineMaterialRack)
 
@@ -92,7 +92,7 @@ function ThreeJS() {
         const edgesRack2 = new THREE.EdgesGeometry(geometryRack2)
         const outlineMaterialRack2 = new THREE.LineBasicMaterial({
             color: 0x000000, // Warna hitam
-            linewidth: 2,
+            linewidth: 1,
         })
         const outlineRack2 = new THREE.LineSegments(edgesRack2, outlineMaterialRack2)
 
@@ -245,40 +245,6 @@ function ThreeJS() {
             }
         })
 
-        // document.addEventListener('mousemove', (event) => {
-        //     // Mendapatkan posisi mouse dalam koordinat normalized device coordinates (NDC)
-        //     mouse.x = (event.clientX / window.innerWidth) * 2 - 1
-        //     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1
-
-        //     // Lakukan raycasting untuk mendeteksi objek yang disorot oleh kursor
-        //     raycaster.setFromCamera(mouse, camera)
-
-        //     const intersects = raycaster.intersectObjects(cubes)
-
-        //     if (intersects.length > 0) {
-        //         const hoveredObject = intersects[0].object as THREE.Mesh
-        //         const hoveredIndex = hoveredObject.userData.id // Menggunakan userData.id yang sudah didefinisikan sebelumnya
-        //         let hoveredName = ''
-        //         let hoveredInstansi = ''
-
-        //         // Cari objek dengan ID yang sesuai dalam array dataDevice
-        //         const foundObject = dataDevice.find((item) => item.id === hoveredIndex)
-
-        //         if (foundObject) {
-        //             // Jika objek ditemukan, ambil properti
-        //             hoveredName = foundObject.name
-        //             hoveredInstansi = foundObject.instansi
-        //         }
-
-        //         const infoDiv = document.getElementById('info')
-        //         infoDiv.innerHTML = `ID: ${hoveredIndex}<br>Name: ${hoveredName}<br>Instansi: ${hoveredInstansi}`
-        //     } else {
-        //         const infoDiv = document.getElementById('info')
-        //         infoDiv.textContent = ''
-        //     }
-        // })
-        // ==========================
-
         // ========CONTROLS=======
         const controls = new OrbitControls(camera, renderer.domElement)
 
@@ -305,6 +271,104 @@ function ThreeJS() {
         const guiContainer = document.getElementById('gui-container');
         guiContainer.appendChild(gui.domElement);
         // =======================
+
+        // ===========CLICK==========
+        let originalCubeColor = 0
+        let selectedCube = null
+
+        document.addEventListener('click', (_event) => {
+            // Kembalikan warna cubeDevice yang sebelumnya diklik
+            if (selectedCube) {
+                selectedCube.material[4].color.setHex(originalCubeColor)
+                selectedCube = null
+            }
+
+            // Lakukan raycasting untuk mendeteksi objek yang diklik
+            raycaster.setFromCamera(mouse, camera)
+
+            const intersects = raycaster.intersectObjects(cubes)
+
+            if (intersects.length > 0) {
+                const clickedObject = intersects[0].object as THREE.Mesh
+
+                // Simpan warna asli cubeDevice yang diklik
+                originalCubeColor = clickedObject.material[4].color.getHex()
+
+                // Ubah warna cubeDevice yang diklik
+                clickedObject.material[4].color.set(0x3afa05) // Misalnya, ubah warna menjadi hijau
+                selectedCube = clickedObject
+
+                // Temukan data cubeDevice berdasarkan ID
+                // const clickedData = data.find((item) => item.id === clickedObject.userData.id)
+
+                // if (clickedData) {
+                //     // Gabungkan data menjadi satu string
+                //     const geometryData = `Width: ${clickedData.geometryDevice.parameters.width}\nHeight: ${clickedData.geometryDevice.parameters.height}\nDepth: ${clickedData.geometryDevice.parameters.depth}`
+                //     const dataString = `ID: ${clickedData.id}\nName: ${clickedData.name}\nInstansi: ${clickedData.instansi}\nGeometry:\n${geometryData}`
+
+                //     // Buka tab baru dan tampilkan data
+                //     const newWindow = window.open('', 'Device Info', 'width=400,height=300')
+                //     newWindow.document.write(`
+                //     <h1>Device Info</h1>
+                //     <table border='solid'>
+                //         <tr>
+                //             <th>ID</th>
+                //             <th>Device Name</th>
+                //             <th>Instansi</th>
+                //         </tr>
+                //         <tr>
+                //             <td>${clickedData.id}</td>
+                //             <td>${clickedData.name}</td>
+                //             <td>${clickedData.instansi}</td>
+                //         </tr>
+                //         </table>
+                //     <pre>${dataString}</pre>`)
+                //     newWindow.document.close()
+                // }
+
+                // console.log(`${clickedData.id}`)
+            }
+        })
+
+        document.addEventListener('dblclick', (_event) => {
+            // Lakukan raycasting untuk mendeteksi objek yang diklik
+            raycaster.setFromCamera(mouse, camera)
+
+            const intersects = raycaster.intersectObjects(cubes)
+
+            if (intersects.length > 0) {
+                const clickedObject = intersects[0].object as THREE.Mesh
+
+                // Temukan data cubeDevice berdasarkan ID
+                const clickedData = dataDevice.find((item) => item.id === clickedObject.userData.id)
+
+                if (clickedData) {
+                    // Gabungkan data menjadi satu string
+                    const geometryData = `Width: ${clickedData.geometryDevice.parameters.width}\nHeight: ${clickedData.geometryDevice.parameters.height}\nDepth: ${clickedData.geometryDevice.parameters.depth}`
+                    const dataString = `ID: ${clickedData.id}\nName: ${clickedData.name}\nInstansi: ${clickedData.instansi}\nGeometry:\n${geometryData}`
+
+                    // Buka tab baru dan tampilkan data
+                    const newWindow = window.open('', 'Device Info', '')
+                    console.table(clickedData)
+                    newWindow.document.write(`
+                <h1>Device Info</h1>
+                <table border='solid'>
+                    <tr>
+                        <th>ID</th>
+                        <th>Device Name</th>
+                        <th>Instansi</th>
+                    </tr>
+                    <tr>
+                        <td>${clickedData.id}</td>
+                        <td>${clickedData.name}</td>
+                        <td>${clickedData.instansi}</td>
+                    </tr>
+                    </table>
+                <pre>${dataString}</pre>`)
+                    newWindow.document.close()
+                }
+            }
+        })
 
         // Fungsi animasi
         const animate = () => {

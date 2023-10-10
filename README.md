@@ -70,4 +70,6 @@ GUI Three JS
 
 ```bash
 npm install @types/dat.gui --save-dev
+atau
+npm install three-gui
 ```
