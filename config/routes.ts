@@ -60,6 +60,11 @@ export default [
         name: 'Server',
         component: './ThreeJS/Server',
       },
+      {
+        path: '/three-js/geometry',
+        name: 'Geometry',
+        component: './ThreeJS/Geometry',
+      },
     ],
   },
   {

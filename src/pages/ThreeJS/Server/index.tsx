@@ -276,7 +276,7 @@ function ThreeJS() {
         let originalCubeColor = 0
         let selectedCube = null
 
-        document.addEventListener('click', (_event) => {
+        document.addEventListener('dblclick', (_event) => {
             // Kembalikan warna cubeDevice yang sebelumnya diklik
             if (selectedCube) {
                 selectedCube.material[4].color.setHex(originalCubeColor)
