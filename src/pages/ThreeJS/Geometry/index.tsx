@@ -30,17 +30,46 @@ function ThreeJS() {
         container.appendChild(renderer.domElement);
         renderer.setSize(container.clientWidth, container.clientHeight);
 
-        // BOX
-        const geometry = new THREE.BoxGeometry(600, 1890, 1200, 30, 30, 30);
-        const material = new THREE.MeshBasicMaterial({
-            color: 0x000000,
-            wireframe: true
-        });
-        const cube = new THREE.Mesh(geometry, material);
-        cube.position.set(10, 1890 / 2, 10)
-        scene.add(cube);
-        //
+        // ==========RACK==========
+        const posLeftRightRack = 0
+        const posTopBottomRack = 1890 / 2 // 1890 / 2
+        const posFrontBackRack = 1200 / 2 + (1200 - 1200) / 2 // tadinya -600
+        const warnaRack = 0x000000 // hitam
 
+        const geometryRack = new THREE.BoxGeometry(600, 1890, 1200);
+        const materialRack = new THREE.MeshBasicMaterial({
+            color: warnaRack,
+            transparent: true,
+            opacity: 0.8,
+        })
+
+        const pintu = new THREE.MeshBasicMaterial({
+            color: 0x0a0a0a,
+            transparent: true,
+            opacity: 0,
+        })
+        const materialsRack = [
+            materialRack, // Right
+            materialRack, // Left
+            materialRack, // Top
+            materialRack, // Bottom
+            pintu, // Front
+            pintu, // Back
+        ]
+        const cubeRack = new THREE.Mesh(geometryRack, materialsRack)
+        cubeRack.position.set(posLeftRightRack, posTopBottomRack, posFrontBackRack)
+        scene.add(cubeRack)
+
+        // garis tepi (outline) untuk rack
+        const edgesRack = new THREE.EdgesGeometry(geometryRack)
+        const outlineMaterialRack = new THREE.LineBasicMaterial({
+            color: 0x000000, // Warna hitam
+            linewidth: 1,
+        })
+        const outlineRack = new THREE.LineSegments(edgesRack, outlineMaterialRack)
+
+        cubeRack.add(outlineRack)
+        // =======================
 
 
 
