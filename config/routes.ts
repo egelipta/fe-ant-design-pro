@@ -65,6 +65,11 @@ export default [
         name: 'Geometry',
         component: './ThreeJS/Geometry',
       },
+      {
+        path: '/three-js/example',
+        name: 'Example',
+        component: './ThreeJS/Example',
+      },
     ],
   },
   {

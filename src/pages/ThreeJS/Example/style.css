@@ -1,0 +1,6 @@
+.gui-container {
+  position: absolute;
+  top: 32px; /* Sesuaikan dengan posisi vertikal yang diinginkan */
+  left: 40px; /* Sesuaikan dengan posisi horizontal yang diinginkan */
+  z-index: 1; /* Pastikan GUI berada di atas canvas Three.js */
+}
