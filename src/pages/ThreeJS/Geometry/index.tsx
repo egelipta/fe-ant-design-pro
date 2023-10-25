@@ -17,8 +17,8 @@ function ThreeJS() {
         // Inisialisasi scene, camera, dan renderer Three.js
         const scene = new THREE.Scene();
 
-        // Set latar belakang scene menjadi warna putih
-        scene.background = new THREE.Color(0xffffff);
+        // Set latar belakang scene menjadi warnaRack putih
+        scene.background = new THREE.Color(0x0f3470);
 
         const camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 1, 50000);
         camera.position.set(8000, 7000, 10000)
@@ -30,46 +30,167 @@ function ThreeJS() {
         container.appendChild(renderer.domElement);
         renderer.setSize(container.clientWidth, container.clientHeight);
 
-        // ==========RACK==========
-        const posLeftRightRack = 0
-        const posTopBottomRack = 1890 / 2 // 1890 / 2
-        const posFrontBackRack = 1200 / 2 + (1200 - 1200) / 2 // tadinya -600
-        const warnaRack = 0x000000 // hitam
-
-        const geometryRack = new THREE.BoxGeometry(600, 1890, 1200);
-        const materialRack = new THREE.MeshBasicMaterial({
-            color: warnaRack,
+        // alas
+        const geometry1 = new THREE.BoxGeometry(600, 30, 1200);
+        const material1 = new THREE.MeshBasicMaterial({
+            color: 0x94cdff,
             transparent: true,
-            opacity: 0.8,
-        })
+            opacity: 0.3
+        });
+        const cube1 = new THREE.Mesh(geometry1, material1);
+        cube1.position.set(0, 30 / 2, 0)
+        scene.add(cube1);
 
-        const pintu = new THREE.MeshBasicMaterial({
-            color: 0x0a0a0a,
+        // atap
+        const geometry2 = new THREE.BoxGeometry(600, 30, 1200);
+        const material2 = new THREE.MeshBasicMaterial({
+            color: 0x94cdff,
             transparent: true,
-            opacity: 0,
-        })
-        const materialsRack = [
-            materialRack, // Right
-            materialRack, // Left
-            materialRack, // Top
-            materialRack, // Bottom
-            pintu, // Front
-            pintu, // Back
-        ]
-        const cubeRack = new THREE.Mesh(geometryRack, materialsRack)
-        cubeRack.position.set(posLeftRightRack, posTopBottomRack, posFrontBackRack)
-        scene.add(cubeRack)
+            opacity: 0.3
+        });
+        const cube2 = new THREE.Mesh(geometry2, material2);
+        cube2.position.set(0, 1890 - (30 / 2), 0)
+        scene.add(cube2);
 
-        // garis tepi (outline) untuk rack
-        const edgesRack = new THREE.EdgesGeometry(geometryRack)
-        const outlineMaterialRack = new THREE.LineBasicMaterial({
-            color: 0x000000, // Warna hitam
-            linewidth: 1,
-        })
-        const outlineRack = new THREE.LineSegments(edgesRack, outlineMaterialRack)
+        // kiri
+        const geometry3 = new THREE.BoxGeometry(20, 1890, 1200);
+        const material3 = new THREE.MeshBasicMaterial({
+            color: 0x94cdff,
+            transparent: true,
+            opacity: 0.3
+        });
+        const cube3 = new THREE.Mesh(geometry3, material3);
+        cube3.position.set(600 / 2 * -1 - (20 / 2), 1890 / 2, 0)
+        scene.add(cube3);
 
-        cubeRack.add(outlineRack)
-        // =======================
+        // Kanan
+        const geometry4 = new THREE.BoxGeometry(20, 1890, 1200);
+        const material4 = new THREE.MeshBasicMaterial({
+            color: 0x94cdff,
+            transparent: true,
+            opacity: 0.3
+        });
+        const cube4 = new THREE.Mesh(geometry4, material4);
+        cube4.position.set(600 / 2 * 1 + (20 / 2), 1890 / 2, 0)
+        scene.add(cube4);
+
+
+        // // ==========RACK==========
+        // const warnaRack = 0x000000;
+
+        // const widthRack1 = 600;
+        // const widthRack2 = 800;
+        // const heightRack1 = 45 * 42;
+        // const heightRack2 = 45 * 45;
+        // const depthRack1 = 1200;
+        // const depthRack2 = 1000;
+
+        // const dataRack = [
+        //     {
+        //         name: "RACK 1",
+        //         position: {
+        //             x: 0,
+        //             y: heightRack1 / 2,
+        //             z: 1200 / 2 + (1200 - depthRack1) / 2,
+        //         },
+        //         size: {
+        //             width: widthRack1,
+        //             height: heightRack1,
+        //             depth: depthRack1,
+        //             widthSegments: 50,
+        //             heightSegments: 50,
+        //             depthSegments: 50,
+        //         },
+        //         material: {
+        //             colors: {
+        //                 right: warnaRack,
+        //                 left: warnaRack,
+        //                 top: warnaRack,
+        //                 bottom: warnaRack,
+        //                 front: warnaRack,
+        //                 back: warnaRack,
+        //             },
+        //             wireframe: {
+        //                 right: true,
+        //                 left: true,
+        //                 top: true,
+        //                 bottom: true,
+        //                 front: false,
+        //                 back: false,
+        //             },
+        //         },
+        //     },
+        //     {
+        //         name: "RACK 2",
+        //         position: {
+        //             x: widthRack2 / 2 + 600 / 2,
+        //             y: heightRack2 / 2,
+        //             z: 1200 / 2 + (1200 - depthRack2) / 2,
+        //         },
+        //         size: {
+        //             width: widthRack2,
+        //             height: heightRack2,
+        //             depth: depthRack2,
+        //             widthSegments: 50,
+        //             heightSegments: 50,
+        //             depthSegments: 50,
+        //         },
+        //         material: {
+        //             colors: {
+        //                 right: warnaRack,
+        //                 left: warnaRack,
+        //                 top: warnaRack,
+        //                 bottom: warnaRack,
+        //                 front: warnaRack,
+        //                 back: warnaRack,
+        //             },
+        //             wireframe: {
+        //                 right: true,
+        //                 left: true,
+        //                 top: true,
+        //                 bottom: true,
+        //                 front: false,
+        //                 back: false,
+        //             },
+        //         },
+        //     },
+
+        // ];
+
+        // const cubesRack = [];
+
+        // for (const data of dataRack) {
+        //     const geometry = new THREE.BoxGeometry(
+        //         data.size.width,
+        //         data.size.height,
+        //         data.size.depth,
+        //         data.size.widthSegments,
+        //         data.size.heightSegments,
+        //         data.size.depthSegments,
+        //     );
+
+        //     const materials = [
+        //         new THREE.MeshBasicMaterial({ color: data.material.colors.right, wireframe: data.material.wireframe.right }), // Right
+        //         new THREE.MeshBasicMaterial({ color: data.material.colors.left, wireframe: data.material.wireframe.left }), // Left
+        //         new THREE.MeshBasicMaterial({ color: data.material.colors.top, wireframe: data.material.wireframe.top }), // Top
+        //         new THREE.MeshBasicMaterial({ color: data.material.colors.bottom, wireframe: data.material.wireframe.bottom }), // Bottom
+        //         new THREE.MeshBasicMaterial({ color: data.material.colors.front, transparent: true, opacity: 0 }), // Front
+        //         new THREE.MeshBasicMaterial({ color: data.material.colors.back, transparent: true, opacity: 0 }), // Back
+        //     ];
+
+        //     const cubeRack = new THREE.Mesh(geometry, materials);
+        //     cubeRack.position.set(data.position.x, data.position.y, data.position.z);
+        //     cubeRack.name = data.name;
+
+        //     scene.add(cubeRack);
+        //     cubesRack.push(cubeRack);
+        // }
+
+        // console.table(cubesRack);
+        // // =======================
+
+
+
 
 
 
@@ -130,7 +251,7 @@ function ThreeJS() {
     return (
         <div>
 
-            <ProCard bordered style={{ marginBottom: '10px' }}
+            {/* <ProCard bordered style={{ marginBottom: '10px' }}
                 extra={[
                     <Button
                         type="primary"
@@ -143,7 +264,7 @@ function ThreeJS() {
                     </Button>
                 ]}
             >
-            </ProCard>
+            </ProCard> */}
             <div id="gui-container" className="gui-container" />
             <div id="container" style={{ width: '100%', height: '75vh' }} />
 

@@ -10,7 +10,7 @@ function ThreeJS() {
         // Inisialisasi scene, camera, dan renderer Three.js
         const scene = new THREE.Scene();
 
-        // Set latar belakang scene menjadi warna putih
+        // Set latar belakang scene
         scene.background = new THREE.Color(0x0f3470);
 
         const camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 1, 50000);
@@ -23,47 +23,225 @@ function ThreeJS() {
         container.appendChild(renderer.domElement);
         renderer.setSize(container.clientWidth, container.clientHeight);
 
-        // ==========RACK==========
-        const posLeftRightRack = 0
-        const posTopBottomRack = 1900 / 2 // 1890 / 2
-        const posFrontBackRack = 1200 / 2 + (1200 - 1200) / 2 // tadinya -600
-        const warnaRack = 0xe6c58c // hitam
+        const cubesRack = []
+        let originalCubeColorRack = 0
+        let selectedCubeRack = null
 
-        const geometryRack = new THREE.BoxGeometry(600, 1900, 1200);
-        const materialRack = new THREE.MeshBasicMaterial({
-            color: warnaRack,
-            transparent: true,
-            opacity: 0.8,
-        })
 
-        const pintu = new THREE.MeshBasicMaterial({
-            color: 0x0a0a0a,
-            transparent: true,
-            opacity: 0,
-        })
-        const materialsRack = [
-            materialRack, // Right
-            materialRack, // Left
-            materialRack, // Top
-            materialRack, // Bottom
-            pintu, // Front
-            pintu, // Back
-        ]
-        const cubeRack = new THREE.Mesh(geometryRack, materialsRack)
-        cubeRack.position.set(posLeftRightRack, posTopBottomRack, posFrontBackRack)
-        scene.add(cubeRack)
+        function createRack(scene, xOffset) {
+            // alas
+            const geometryAlas = new THREE.BoxGeometry(600, 30, 1200);
+            const materialAlas = new THREE.MeshBasicMaterial({
+                color: 0x93c3ed,
+                opacity: 0.4,
+                transparent: true
+            });
+            const cubeAlas = new THREE.Mesh(geometryAlas, materialAlas);
+            cubeAlas.position.set(xOffset, 30 / 2, 1200 / 2 + (1200 - 1200) / 2);
+            cubesRack.push(cubeAlas);
+            scene.add(cubeAlas);
 
-        // garis tepi (outline) untuk rack
-        const edgesRack = new THREE.EdgesGeometry(geometryRack)
-        const outlineMaterialRack = new THREE.LineBasicMaterial({
-            color: 0xffffff, // Warna hitam
-            opacity: 0.05,
-            linewidth: 0,
-        })
-        const outlineRack = new THREE.LineSegments(edgesRack, outlineMaterialRack)
+            // atap
+            const geometryAtap = new THREE.BoxGeometry(600, 30, 1200);
+            const materialAtap = new THREE.MeshBasicMaterial({
+                color: 0x93c3ed,
+                opacity: 0.4,
+                transparent: true
+            });
+            const cubeAtap = new THREE.Mesh(geometryAtap, materialAtap);
+            cubeAtap.position.set(xOffset, 1890 - (30 / 2), 1230 / 2 + (1200 - 1200) / 2);
+            cubesRack.push(cubeAtap)
+            scene.add(cubeAtap);
 
-        cubeRack.add(outlineRack)
-        // =======================
+            // kiri
+            const geometryKiri = new THREE.BoxGeometry(20, 1890, 1200);
+            const materialKiri = new THREE.MeshBasicMaterial({
+                color: 0x93c3ed,
+                opacity: 0.4,
+                transparent: true
+            });
+            const cubeKiri = new THREE.Mesh(geometryKiri, materialKiri);
+            cubeKiri.position.set(xOffset - 600 / 2 - 20 / 2, 1890 / 2, 1200 / 2 + (1200 - 1200) / 2);
+            cubesRack.push(cubeKiri)
+            scene.add(cubeKiri);
+
+            // Kanan
+            const geometryKanan = new THREE.BoxGeometry(20, 1890, 1200);
+            const materialKanan = new THREE.MeshBasicMaterial({
+                color: 0x93c3ed,
+                opacity: 0.4,
+                transparent: true
+            });
+            const cubeKanan = new THREE.Mesh(geometryKanan, materialKanan);
+            cubeKanan.position.set(xOffset + 600 / 2 + 20 / 2, 1890 / 2, 1200 / 2 + (1200 - 1200) / 2);
+            cubesRack.push(cubeKanan)
+            scene.add(cubeKanan);
+
+            // ========MOUSEMOVE=========
+            document.addEventListener('mousemove', (event) => {
+                console.log('ada hover Rak')
+                // Mendapatkan posisi mouse dalam koordinat normalized device coordinates (NDC)
+                // mouse.x = (event.clientX / window.innerWidth) * 2 - 1
+                // mouse.y = -(event.clientY / window.innerHeight) * 2 + 1
+
+                const rect = renderer.domElement.getBoundingClientRect();
+
+                mouse.x = ((event.clientX - rect.left) / (rect.right - rect.left)) * 2 - 1;
+                mouse.y = - ((event.clientY - rect.top) / (rect.bottom - rect.top)) * 2 + 1;
+
+
+
+                // Lakukan raycasting untuk mendeteksi objek yang disorot oleh kursor
+                raycaster.setFromCamera(mouse, camera)
+
+                const intersects = raycaster.intersectObjects(cubesRack)
+                console.log('jumlah cube : ', intersects.length)
+
+                // // Kembalikan warna cubeDevice yang sebelumnya diklik
+                // if (selectedCubeRack) {
+                //     selectedCubeRack.material[4].color.setHex(originalCubeColorRack)
+                //     selectedCubeRack.material[3].color.setHex(warnaDevice)
+                //     selectedCubeRack = null
+                // }
+
+                if (intersects.length > 0) {
+                    console.log(intersects[0].point.x, intersects[0].point.y)
+                    const hoveredObject = intersects[0].object as THREE.Mesh
+                    const hoveredIndex = hoveredObject.userData.id
+
+                    // Simpan warna asli cubeDevice yang diklik
+                    // originalCubeColorRack = hoveredObject.material[0].color.getHex()
+                    // hoveredObject.material
+
+                    // ----------------------------------
+                    // if (hoveredObject.material.length > 0){
+                    //     console.log('Material: ', hoveredObject.material.color)
+                    // }
+
+
+                    // originalCubeColor = hoveredObject.material[3].color.getHex()
+
+                    // Ubah warna cubeDevice yang diklik
+                    // hoveredObject.material[4].color.set(0x0a8afa) // Misalnya, ubah warna saat hover
+
+                    // hoveredObject.material[0].color.set(0x0a8afa) // Misalnya, ubah warna saat hover
+
+                    selectedCubeRack = hoveredObject
+                    // Cari objek dengan ID yang sesuai dalam array dataDevice
+                    const foundObject = dataDevice.find((item) => item.id === hoveredIndex)
+
+                    if (foundObject) {
+                        // Jika objek ditemukan, perbarui nilai variabel-variabel di GUI
+                        guiData.ID = hoveredIndex
+                        guiData.Name = foundObject.name
+                        guiData.Instansi = foundObject.instansi
+                    }
+                } else {
+                    // Reset nilai jika tidak ada objek yang disorot
+                    guiData.ID = ''
+                    guiData.Name = ''
+                    guiData.Instansi = ''
+                }
+            })
+        }
+
+        // Loop untuk membuat tiga rak dengan jarak 1500 antara masing-masing
+        for (let i = 0; i < 5; i++) {
+            createRack(scene, i * 650);
+        }
+
+
+        // function rack2(scene) {
+        //     // alas
+        //     const geometryAlas = new THREE.BoxGeometry(600, 30, 1200);
+        //     const materialAlas = new THREE.MeshBasicMaterial({
+        //         color: 0xffffff,
+        //         opacity: 0.6,
+        //         transparent: true
+        //     });
+        //     const cubeAlas = new THREE.Mesh(geometryAlas, materialAlas);
+        //     cubeAlas.position.set(800, 30 / 2, 1200 / 2 + (1200 - 1200) / 2)
+        //     scene.add(cubeAlas);
+
+        //     // atap
+        //     const geometryAtap = new THREE.BoxGeometry(600, 30, 1200);
+        //     const materialAtap = new THREE.MeshBasicMaterial({
+        //         color: 0xffffff,
+        //         opacity: 0.6,
+        //         transparent: true
+        //     });
+        //     const cubeAtap = new THREE.Mesh(geometryAtap, materialAtap);
+        //     cubeAtap.position.set(800, 1890 - (30 / 2), 1200 / 2 + (1200 - 1200) / 2)
+        //     scene.add(cubeAtap);
+
+        //     // kiri
+        //     const geometryKiri = new THREE.BoxGeometry(20, 1890, 1200);
+        //     const materialKiri = new THREE.MeshBasicMaterial({
+        //         color: 0xffffff,
+        //         opacity: 0.6,
+        //         transparent: true
+        //     });
+        //     const cubeKiri = new THREE.Mesh(geometryKiri, materialKiri);
+        //     cubeKiri.position.set(-1000 / 2 * -1 - (20 / 2), 1890 / 2, 1200 / 2 + (1200 - 1200) / 2)
+        //     scene.add(cubeKiri);
+
+        //     // Kanan
+        //     const geometryKanan = new THREE.BoxGeometry(20, 1890, 1200);
+        //     const materialKanan = new THREE.MeshBasicMaterial({
+        //         color: 0xffffff,
+        //         opacity: 0.6,
+        //         transparent: true
+        //     });
+        //     const cubeKanan = new THREE.Mesh(geometryKanan, materialKanan);
+        //     cubeKanan.position.set(2200 / 2 * 1 + (20 / 2), 1890 / 2, 1200 / 2 + (1200 - 1200) / 2)
+        //     scene.add(cubeKanan);
+        // }
+        // rack2(scene);
+
+
+
+
+        // // ==========RACK==========
+        // const posLeftRightRack = 0
+        // const posTopBottomRack = 1900 / 2 // 1890 / 2
+        // const posFrontBackRack = 1200 / 2 + (1200 - 1200) / 2 // tadinya -600
+        // const warnaRack = 0xe6c58c // hitam
+
+        // const geometryRack = new THREE.BoxGeometry(600, 1900, 1200);
+        // const materialRack = new THREE.MeshBasicMaterial({
+        //     color: warnaRack,
+        //     transparent: true,
+        //     opacity: 0.8,
+        // })
+
+        // const pintu = new THREE.MeshBasicMaterial({
+        //     color: 0x0a0a0a,
+        //     transparent: true,
+        //     opacity: 0,
+        // })
+        // const materialsRack = [
+        //     materialRack, // Right
+        //     materialRack, // Left
+        //     materialRack, // Top
+        //     materialRack, // Bottom
+        //     pintu, // Front
+        //     pintu, // Back
+        // ]
+        // const cubeRack = new THREE.Mesh(geometryRack, materialsRack)
+        // cubeRack.position.set(posLeftRightRack, posTopBottomRack, posFrontBackRack)
+        // scene.add(cubeRack)
+
+        // // garis tepi (outline) untuk rack
+        // const edgesRack = new THREE.EdgesGeometry(geometryRack)
+        // const outlineMaterialRack = new THREE.LineBasicMaterial({
+        //     color: 0xffffff, // Warna hitam
+        //     opacity: 0.05,
+        //     linewidth: 0,
+        // })
+        // const outlineRack = new THREE.LineSegments(edgesRack, outlineMaterialRack)
+
+        // cubeRack.add(outlineRack)
+        // // =======================
 
         // // ==========RACK 2==========
         // const posLeftRightRack2 = 800 / 2 + 600 / 2
